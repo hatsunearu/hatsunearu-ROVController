@@ -22,18 +22,14 @@ void setup() {
 }
 
 void loop() {
-  while(Serial.available() > 0) {
+  while(Serial.available() > 8) { //gather 9 bits in hardware buffer
      
         byte message = Serial.read();
 
         if (message == 'T' || message == 't') { //Throttle message starts with T followed by 8 Hexadecimal inputs
-                delay(10); //wait for arrival of bytes to hardware buffer
+                
                 for(int i=0; i < 8; i++) {
-                        
                         buffer[i] = Serial.read();
-                        delay(1);
-                        //Serial.println(i);
-                        //Serial.println((int)buffer[i]);
                 }       
 
                 //Convert two hexes to a decimal 0~255, rescale to 905 ~ 2100
@@ -42,10 +38,6 @@ void loop() {
                 mc2.writeMicroseconds( 75 * (hex2dec(buffer[2]) * 16 + hex2dec(buffer[3])) / 16 + 905 );
                 mc3.writeMicroseconds( 75 * (hex2dec(buffer[4]) * 16 + hex2dec(buffer[5])) / 16 + 905 );
                 mc4.writeMicroseconds( 75 * (hex2dec(buffer[6]) * 16 + hex2dec(buffer[7])) / 16 + 905 );
-        }
-        
-        else {
-           Serial.flush(); 
         }
 
   }
